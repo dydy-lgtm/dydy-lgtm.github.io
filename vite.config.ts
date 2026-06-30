@@ -9,4 +9,8 @@ export default defineConfig({
       "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
   },
+  build: {
+    outDir: 'docs',  // 默认是 'dist'
+    // 其他构建选项...
+  }
 });
