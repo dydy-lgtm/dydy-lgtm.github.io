@@ -72,37 +72,34 @@ onBeforeUnmount(() => {
 
 <template>
   <section id="hero" ref="root" class="hero">
-    <!-- 视频内嵌成一块圆角画框,四周与屏幕留间距 -->
-    <div class="frame">
-      <!-- 首屏多镜头 AI 视频背景(把视频放到 public/media/hero.mp4) -->
-      <video
-        ref="videoEl"
-        class="bg"
-        :src="hero.videoSrc"
-        autoplay
-        muted
-        playsinline
-      ></video>
-      <div class="mask"></div>
+    <!-- 首屏多镜头 AI 视频背景,通铺满屏(把视频放到 public/media/hero.mp4) -->
+    <video
+      ref="videoEl"
+      class="bg"
+      :src="hero.videoSrc"
+      autoplay
+      muted
+      playsinline
+    ></video>
+    <div class="mask"></div>
 
-      <div class="content container">
-        <p class="kicker" data-anim>{{ hero.kicker }}</p>
-        <h1 class="title" data-anim>{{ hero.title }}</h1>
-        <p class="subtitle" data-anim>{{ hero.subtitle }}</p>
-        <div class="ctas" data-anim>
-          <button
-            v-for="c in hero.ctas"
-            :key="c.label"
-            :class="['btn', { primary: c.primary }]"
-            @click="goToId(c.to)"
-          >
-            {{ c.label }}
-          </button>
-        </div>
+    <div class="content container">
+      <p class="kicker" data-anim>{{ hero.kicker }}</p>
+      <h1 class="title" data-anim>{{ hero.title }}</h1>
+      <p class="subtitle" data-anim>{{ hero.subtitle }}</p>
+      <div class="ctas" data-anim>
+        <button
+          v-for="c in hero.ctas"
+          :key="c.label"
+          :class="['btn', { primary: c.primary }]"
+          @click="goToId(c.to)"
+        >
+          {{ c.label }}
+        </button>
       </div>
-
-      <span class="badge">{{ hero.badge }}</span>
     </div>
+
+    <span class="badge">{{ hero.badge }}</span>
   </section>
 </template>
 
@@ -112,14 +109,7 @@ onBeforeUnmount(() => {
   height: 100vh;
   overflow: hidden;
   color: #fff;
-  background: var(--bg-light);
-  padding: 16px; /* 视频四周与屏幕的间距 */
-}
-.frame {
-  position: relative;
-  height: 100%;
-  border-radius: 22px;
-  overflow: hidden;
+  /* 没有视频素材时的深色兜底 */
   background: #14121c;
 }
 .bg {
@@ -155,7 +145,7 @@ onBeforeUnmount(() => {
   opacity: 0.85;
 }
 .title {
-  font-size: clamp(40px, 6vw, 84px);
+  font-size: clamp(38px, 4.5vw, 60px);
   font-weight: 800;
   margin: 12px 0 8px;
 }
@@ -169,8 +159,8 @@ onBeforeUnmount(() => {
   gap: 14px;
 }
 .btn {
-  padding: 12px 26px;
-  border-radius: 999px;
+  padding: 11px 24px;
+  border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.6);
   background: transparent;
   color: #fff;

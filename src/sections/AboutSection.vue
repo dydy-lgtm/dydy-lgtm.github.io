@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount, ref } from "vue";
 import { gsap } from "gsap";
-import { principles } from "@/data/profile";
+import { about, principles } from "@/data/profile";
 import { useEnter } from "@/composables/useEnter";
 
 const props = defineProps<{ active: boolean }>();
@@ -11,22 +11,33 @@ let ctx: gsap.Context;
 
 onMounted(() => {
   ctx = gsap.context((self) => {
-    gsap.set(self.selector!(".p-card"), { y: 60, opacity: 0 });
-    gsap.set(self.selector!(".desk-bg"), { scale: 1.12 });
+    gsap.set(self.selector!(".photo-card, .intro"), { y: 40, opacity: 0 });
+    gsap.set(self.selector!(".p-card"), { y: 50, opacity: 0 });
+    gsap.set(self.selector!(".desk-bg"), { scale: 1.1 });
   }, root.value);
 });
 
-// 翻入即播:4 张卡依进入 stagger 浮入(不随滚动进度)
-// 入场结束后清掉内联 transform,把控制权交回 CSS(hover 放大 / 点击聚焦的 3D 变换)
+// 翻入即播:相片卡/标题浮入,4 张便签卡 stagger 浮入
+// 入场结束后清掉内联样式,把控制权交回 CSS(hover 放大)
 useEnter(
   () => props.active,
   () => {
-    gsap.to(root.value!.querySelectorAll(".p-card"), {
+    const q = (s: string) => root.value!.querySelectorAll(s);
+    gsap.to(q(".photo-card, .intro"), {
+      y: 0,
+      opacity: 1,
+      duration: 0.8,
+      ease: "power2.out",
+      stagger: 0.12,
+      clearProps: "transform,opacity",
+    });
+    gsap.to(q(".p-card"), {
       y: 0,
       opacity: 1,
       duration: 0.7,
       ease: "power2.out",
-      stagger: 0.15,
+      stagger: 0.12,
+      delay: 0.15,
       clearProps: "transform,opacity",
     });
     gsap.to(root.value!.querySelector(".desk-bg"), {
@@ -37,11 +48,8 @@ useEnter(
   }
 );
 
-// 点击卡片聚焦/取消(支持点击);hover 放大由 CSS 处理
-const focusedNo = ref<string | null>(null);
-function toggle(no: string) {
-  focusedNo.value = focusedNo.value === no ? null : no;
-}
+// 点击卡片弹出详情大卡;点 × 或蒙层空白处关闭
+const opened = ref<(typeof principles)[number] | null>(null);
 
 onBeforeUnmount(() => ctx?.revert());
 </script>
@@ -49,29 +57,65 @@ onBeforeUnmount(() => ctx?.revert());
 <template>
   <section id="about" ref="root" class="about">
     <div class="stage">
-      <!-- 桌面平铺背景图(放 public/media/desk.jpg) -->
+      <!-- 设计工作台拼贴背景(放 public/media/desk.jpg),白色蒙层压淡 -->
       <div class="desk-bg"></div>
       <div class="mask"></div>
 
-      <h2 class="big">关于<br />我</h2>
+      <!-- 左:白边相片卡 + 关于我 + 小档案 -->
+      <div class="left">
+        <div class="photo-card">
+          <div class="photo"></div>
+        </div>
+        <div class="intro">
+          <h2 class="big">关于<br />我</h2>
+          <p class="meta">
+            <span v-for="m in about.meta" :key="m">{{ m }}</span>
+          </p>
+        </div>
+      </div>
 
+      <!-- 右:4 张横向错落的便签卡 -->
       <div class="cards">
         <article
           v-for="p in principles"
           :key="p.no"
           class="p-card"
-          :class="{
-            focus: focusedNo === p.no,
-            dim: focusedNo !== null && focusedNo !== p.no,
-          }"
-          @click="toggle(p.no)"
+          @click="opened = p"
         >
-          <p class="p-title">{{ p.title }} <span class="arrow">→</span></p>
-          <p class="p-en">{{ p.en }}</p>
+          <p class="p-title">{{ p.title }}<span class="arrow">→</span></p>
+          <p class="p-en">
+            <span class="chip" :style="{ background: p.color }"></span
+            >{{ p.en }}
+          </p>
           <p class="p-desc">{{ p.desc }}</p>
           <span class="p-no">{{ p.no }}</span>
         </article>
       </div>
+
+      <!-- 点击后的详情大卡:背景白化虚化,卡片缩放浮出 -->
+      <Transition name="modal">
+        <div
+          v-if="opened"
+          class="overlay"
+          @click.self="opened = null"
+          @wheel.stop
+        >
+          <div class="detail" :style="{ '--tint': opened.color }">
+            <button class="close" aria-label="关闭" @click="opened = null">
+              ×
+            </button>
+            <div class="d-head">
+              <div class="d-icon">{{ opened.title[0] }}</div>
+              <div>
+                <p class="d-title">{{ opened.title }}</p>
+                <p class="d-no">{{ opened.no }}</p>
+              </div>
+            </div>
+            <p class="d-en">{{ opened.en }}</p>
+            <p class="d-desc">{{ opened.full }}</p>
+          </div>
+        </div>
+      </Transition>
     </div>
   </section>
 </template>
@@ -95,86 +139,250 @@ onBeforeUnmount(() => ctx?.revert());
 .mask {
   position: absolute;
   inset: 0;
-  background: rgba(244, 244, 242, 0.45);
+  background: rgba(248, 248, 246, 0.55);
+}
+
+/* —— 左侧:相片卡 + 关于我 —— */
+.left {
+  position: absolute;
+  left: clamp(24px, 29vw, 32vw);
+  top: 50%;
+  transform: translateY(-52%);
+}
+.photo-card {
+  width: clamp(150px, 13.5vw, 200px);
+  padding: 9px;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.18);
+}
+.photo {
+  aspect-ratio: 4 / 5;
+  border-radius: 10px;
+  /* 没有照片时的深色占位底 */
+  background: #23262e url("/media/about.jpg") center / cover no-repeat;
+}
+.intro {
+  margin-top: 20px;
 }
 .big {
-  position: absolute;
-  left: 8vw;
-  bottom: 14vh;
-  font-size: clamp(40px, 6vw, 80px);
+  font-size: clamp(34px, 3.6vw, 52px);
   font-weight: 800;
-  line-height: 1;
+  line-height: 1.05;
 }
+.meta {
+  display: flex;
+  gap: 12px;
+  margin-top: 10px;
+  border-left: 2px solid rgba(0, 0, 0, 0.7);
+  padding-left: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-weak);
+}
+
+/* —— 右侧:错落便签卡 —— */
 .cards {
   position: absolute;
-  right: 8vw;
-  top: 0;
-  bottom: 0;
-  width: min(420px, 40vw);
+  left: 48.5%;
+  top: 50%;
+  transform: translateY(-50%);
+  width: min(320px, 27vw);
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: 18px;
-  /* 3D 透视:整列卡片像一块斜置的面板,营造立体感 */
-  perspective: 1200px;
-  transform-style: preserve-3d;
+  gap: 14px;
+}
+/* 像随手摆放的便签,横向交错 */
+.p-card:nth-child(2) {
+  margin-left: 42px;
+}
+.p-card:nth-child(3) {
+  margin-left: 10px;
+}
+.p-card:nth-child(4) {
+  margin-left: 32px;
 }
 .p-card {
   position: relative;
-  z-index: 1;
   background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(6px);
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  border-radius: 14px;
-  padding: 18px 20px;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  border-radius: 12px;
+  padding: 14px 18px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
   cursor: pointer;
-  transform-origin: right center;
-  /* 默认略微侧倾,产生纵深 */
-  transform: rotateY(-12deg);
-  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 0.4s ease, opacity 0.4s ease;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.35s ease;
 }
-/* hover:转正并放大,卡片向前凸出 */
 .p-card:hover {
-  transform: rotateY(0deg) scale(1.06);
-  box-shadow: 0 26px 60px rgba(0, 0, 0, 0.18);
-  z-index: 4;
-}
-/* 点击聚焦:保持放大转正、压在最上层 */
-.p-card.focus {
-  transform: rotateY(0deg) scale(1.09);
-  box-shadow: 0 30px 70px rgba(156, 96, 252, 0.28);
-  border-color: var(--accent);
-  z-index: 5;
-}
-/* 有卡聚焦时,其余卡淡出收缩 */
-.p-card.dim {
-  opacity: 0.45;
-  transform: rotateY(-12deg) scale(0.96);
+  transform: scale(1.05);
+  box-shadow: 0 22px 50px rgba(0, 0, 0, 0.14);
+  z-index: 2;
 }
 .p-title {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
+  padding-right: 28px;
 }
+/* hover 时标题后浮出箭头 */
 .arrow {
-  color: var(--accent);
+  display: inline-block;
+  margin-left: 8px;
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.p-card:hover .arrow {
+  opacity: 1;
+  transform: translateX(0);
 }
 .p-en {
-  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
   color: var(--text-weak);
-  margin: 4px 0 8px;
+  margin: 5px 0 6px;
+}
+.chip {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  flex: none;
 }
 .p-desc {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text-weak);
-  line-height: 1.7;
+  line-height: 1.6;
+  /* 单行截断,完整内容点开详情看 */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .p-no {
   position: absolute;
+  right: 14px;
+  top: 13px;
+  font-size: 10px;
+  color: var(--text-weak);
+}
+
+/* —— 点击详情大卡 —— */
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(16px);
+}
+.detail {
+  position: relative;
+  width: min(520px, 86vw);
+  border-radius: 22px;
+  padding: 30px 34px 34px;
+  background: #fff;
+  background: linear-gradient(
+    150deg,
+    #fff 42%,
+    color-mix(in srgb, var(--tint) 38%, #fff)
+  );
+  box-shadow: 0 34px 90px rgba(0, 0, 0, 0.16);
+}
+.close {
+  position: absolute;
   right: 16px;
   top: 16px;
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.06);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+.close:hover {
+  background: rgba(0, 0, 0, 0.12);
+  transform: rotate(90deg);
+}
+.d-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.d-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  background: var(--tint);
+  color: #fff;
+  font-size: 20px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 24px color-mix(in srgb, var(--tint) 45%, transparent);
+}
+.d-title {
+  font-size: 20px;
+  font-weight: 800;
+}
+.d-no {
   font-size: 11px;
   color: var(--text-weak);
+  margin-top: 3px;
+}
+.d-en {
+  font-size: 14px;
+  font-weight: 700;
+  margin: 20px 0 8px;
+}
+.d-desc {
+  font-size: 13px;
+  color: #3a3a40;
+  line-height: 1.9;
+}
+
+/* 详情卡进出场:蒙层淡入,卡片缩放浮出 */
+.modal-enter-active,
+.modal-leave-active {
+  transition: opacity 0.3s ease;
+}
+.modal-enter-active .detail,
+.modal-leave-active .detail {
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
+}
+.modal-enter-from .detail,
+.modal-leave-to .detail {
+  transform: scale(0.9);
+}
+
+/* 窄屏:左右改为上下排,避免重叠 */
+@media (max-width: 860px) {
+  .left {
+    position: static;
+    transform: none;
+    padding: 12vh 24px 0;
+    display: flex;
+    align-items: flex-end;
+    gap: 20px;
+  }
+  .cards {
+    position: static;
+    transform: none;
+    width: auto;
+    margin: 24px 24px 0;
+  }
+  .p-card:nth-child(n) {
+    margin-left: 0;
+  }
 }
 </style>

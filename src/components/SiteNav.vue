@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { brand, navItems } from "@/data/site";
-import { active, goToId, ready } from "@/composables/useFullpage";
+import { active, goToId } from "@/composables/useFullpage";
 
 // 屏索引 → 段落 id;高亮当前屏对应的导航项
 const idToIndex: Record<string, number> = {
@@ -24,7 +24,7 @@ const activeId = computed(() => {
 </script>
 
 <template>
-  <header class="nav" :class="{ show: ready }">
+  <header class="nav">
     <div class="nav-inner">
       <div class="brand" @click="goToId('hero')">{{ brand }}</div>
       <nav class="links">
@@ -49,16 +49,6 @@ const activeId = computed(() => {
   display: flex;
   align-items: center;
   mix-blend-mode: difference; /* 让深/浅底上都可见 */
-  /* 入场动画期间隐藏,视频播完淡入 */
-  opacity: 0;
-  transform: translateY(-10px);
-  pointer-events: none;
-  transition: opacity 0.7s ease, transform 0.7s ease;
-}
-.nav.show {
-  opacity: 1;
-  transform: none;
-  pointer-events: auto;
 }
 .nav-inner {
   display: flex;
