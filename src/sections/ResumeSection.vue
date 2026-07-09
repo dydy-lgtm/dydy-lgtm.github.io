@@ -9,6 +9,9 @@ const props = defineProps<{ active: boolean }>();
 const root = ref<HTMLElement>();
 let ctx: gsap.Context;
 
+// 工作经历手风琴:默认展开最新一段,点标题行切换;再点已展开的可收起
+const openIdx = ref(0);
+
 onMounted(() => {
   ctx = gsap.context((self) => {
     gsap.set(self.selector!("[data-anim]"), { opacity: 0, y: 28 });
@@ -88,12 +91,23 @@ onBeforeUnmount(() => ctx?.revert());
         <!-- 右中:工作经历时间线(竖线 + 圆点) -->
         <div class="timeline" data-anim>
           <p class="block-title"><i class="dot"></i>工作经历</p>
-          <div v-for="(t, i) in resume.timeline" :key="i" class="tl-item">
+          <div
+            v-for="(t, i) in resume.timeline"
+            :key="i"
+            class="tl-item"
+            :class="{ open: openIdx === i }"
+            @click="openIdx = openIdx === i ? -1 : i"
+          >
             <span class="period">{{ t.period }}</span>
             <span class="rail"><i></i></span>
             <div class="tl-body">
-              <p class="tl-title">{{ t.title }}</p>
-              <p class="tl-desc">{{ t.desc }}</p>
+              <p class="tl-title">
+                {{ t.title }}<span class="chev">▾</span>
+              </p>
+              <!-- grid 0fr→1fr 实现高度过渡,不用 JS 量高度 -->
+              <div class="tl-desc-wrap">
+                <p class="tl-desc">{{ t.desc }}</p>
+              </div>
             </div>
           </div>
         </div>
@@ -299,6 +313,16 @@ onBeforeUnmount(() => ctx?.revert());
   grid-template-columns: 84px 20px 1fr;
   gap: 0 10px;
   padding: 8px 0;
+  cursor: pointer;
+}
+.tl-item:hover .tl-title {
+  color: var(--accent);
+}
+/* 展开态圆点实心高亮,收起态空心弱化 */
+.tl-item:not(.open) .rail i {
+  background: #fff;
+  border: 2px solid rgba(156, 96, 252, 0.45);
+  box-shadow: none;
 }
 .period {
   font-size: 12px;
@@ -338,12 +362,38 @@ onBeforeUnmount(() => ctx?.revert());
 .tl-title {
   font-size: 14px;
   font-weight: 600;
+  transition: color 0.2s;
+}
+/* 标题尾部的展开指示箭头 */
+.chev {
+  display: inline-block;
+  margin-left: 6px;
+  font-size: 11px;
+  color: var(--text-weak);
+  transition: transform 0.3s ease;
+}
+.tl-item.open .chev {
+  transform: rotate(180deg);
+}
+/* 手风琴收展:外层 grid 行高 0fr↔1fr 过渡,内层 overflow hidden 裁掉溢出 */
+.tl-desc-wrap {
+  display: grid;
+  grid-template-rows: 0fr;
+  margin-top: 0;
+  transition: grid-template-rows 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    margin-top 0.35s ease;
+}
+.tl-item.open .tl-desc-wrap {
+  grid-template-rows: 1fr;
+  /* 标题与描述的间距放在外层 margin 上,收起时归零,不残留高度 */
+  margin-top: 4px;
 }
 .tl-desc {
+  overflow: hidden;
+  min-height: 0;
   font-size: 12px;
   color: var(--text-weak);
   line-height: 1.7;
-  margin-top: 4px;
 }
 
 /* —— 底部三卡 —— */
