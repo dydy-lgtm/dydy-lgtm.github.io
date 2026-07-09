@@ -356,6 +356,8 @@ onBeforeUnmount(() => ctx?.revert());
 .quote,
 .skills,
 .edu {
+  /* 走马灯轨道是 max-content,不加这行会把本列 min-content 撑爆、挤压两侧卡片 */
+  min-width: 0;
   padding: 22px;
   border: 1px solid var(--line);
   border-radius: 16px;

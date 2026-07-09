@@ -11,31 +11,44 @@ let ctx: gsap.Context;
 
 onMounted(() => {
   ctx = gsap.context((self) => {
-    gsap.set(self.selector!(".photo-card, .intro"), { y: 40, opacity: 0 });
-    gsap.set(self.selector!(".p-card"), { y: 50, opacity: 0 });
+    // 左右两组分别从两侧带 3D 翻转飞入(transformPerspective 给单元素透视)
+    gsap.set(self.selector!(".photo-card, .intro"), {
+      x: -160,
+      opacity: 0,
+      rotateY: 35,
+      transformPerspective: 900,
+    });
+    gsap.set(self.selector!(".p-card"), {
+      x: 160,
+      opacity: 0,
+      rotateY: -35,
+      transformPerspective: 900,
+    });
     gsap.set(self.selector!(".desk-bg"), { scale: 1.1 });
   }, root.value);
 });
 
-// 翻入即播:相片卡/标题浮入,4 张便签卡 stagger 浮入
+// 翻入即播:左侧相片卡/标题从左、右侧 4 张便签卡从右,向中间汇入并转正
 // 入场结束后清掉内联样式,把控制权交回 CSS(hover 放大)
 useEnter(
   () => props.active,
   () => {
     const q = (s: string) => root.value!.querySelectorAll(s);
     gsap.to(q(".photo-card, .intro"), {
-      y: 0,
+      x: 0,
       opacity: 1,
-      duration: 0.8,
-      ease: "power2.out",
+      rotateY: 0,
+      duration: 0.9,
+      ease: "power3.out",
       stagger: 0.12,
       clearProps: "transform,opacity",
     });
     gsap.to(q(".p-card"), {
-      y: 0,
+      x: 0,
       opacity: 1,
-      duration: 0.7,
-      ease: "power2.out",
+      rotateY: 0,
+      duration: 0.8,
+      ease: "power3.out",
       stagger: 0.12,
       delay: 0.15,
       clearProps: "transform,opacity",
@@ -61,6 +74,8 @@ onBeforeUnmount(() => ctx?.revert());
       <div class="desk-bg"></div>
       <div class="mask"></div>
 
+      <!-- 3D 倾斜场景:左右两组元素共处一个倾斜平面,呈现原片的立体俯视感 -->
+      <div class="scene">
       <!-- 左:白边相片卡 + 关于我 + 小档案 -->
       <div class="left">
         <div class="photo-card">
@@ -90,6 +105,7 @@ onBeforeUnmount(() => ctx?.revert());
           <p class="p-desc">{{ p.desc }}</p>
           <span class="p-no">{{ p.no }}</span>
         </article>
+      </div>
       </div>
 
       <!-- 点击后的详情大卡:背景白化虚化,卡片缩放浮出 -->
@@ -142,12 +158,23 @@ onBeforeUnmount(() => ctx?.revert());
   background: rgba(248, 248, 246, 0.55);
 }
 
+/* —— 3D 倾斜场景 ——
+   整体绕三轴微转:rotateX 俯视、rotateY 让右侧向远处收、rotate 负角让右侧翘起,
+   相片卡/标题/便签卡都躺在这个倾斜平面上,静置即有 3D 感 */
+.scene {
+  position: absolute;
+  inset: 0;
+  transform: perspective(1200px) rotateX(7deg) rotateY(-9deg) rotate(-4deg);
+  transform-style: preserve-3d;
+}
+
 /* —— 左侧:相片卡 + 关于我 —— */
 .left {
   position: absolute;
   left: clamp(24px, 29vw, 32vw);
   top: 50%;
-  transform: translateY(-52%);
+  /* 原片里左侧头像+文字向右倾:场景整体是 -4deg,这里加 8deg 抵消后净 +4deg 顺时针 */
+  transform: translateY(-52%) rotate(8deg);
 }
 .photo-card {
   width: clamp(150px, 13.5vw, 200px);
@@ -155,6 +182,8 @@ onBeforeUnmount(() => ctx?.revert());
   background: #fff;
   border-radius: 18px;
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.18);
+  /* 相片卡在左侧整组右倾的基础上再多歪一点 */
+  transform: rotate(3deg);
 }
 .photo {
   aspect-ratio: 4 / 5;
@@ -365,8 +394,15 @@ onBeforeUnmount(() => ctx?.revert());
   transform: scale(0.9);
 }
 
-/* 窄屏:左右改为上下排,避免重叠 */
+/* 窄屏:左右改为上下排,避免重叠;3D 倾斜也一并取消 */
 @media (max-width: 860px) {
+  .scene {
+    position: static;
+    transform: none;
+  }
+  .photo-card {
+    transform: none;
+  }
   .left {
     position: static;
     transform: none;
