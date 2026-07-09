@@ -97,13 +97,16 @@ onBeforeUnmount(() => ctx?.revert());
           class="p-card"
           @click="opened = p"
         >
-          <p class="p-title">{{ p.title }}<span class="arrow">→</span></p>
-          <p class="p-en">
-            <span class="chip" :style="{ background: p.color }"></span
-            >{{ p.en }}
-          </p>
-          <p class="p-desc">{{ p.desc }}</p>
-          <span class="p-no">{{ p.no }}</span>
+          <!-- hover 缩放作用在内层:外层命中区域不随缩放变形,避免 hover 抖动 -->
+          <div class="p-inner">
+            <p class="p-title">{{ p.title }}<span class="arrow">→</span></p>
+            <p class="p-en">
+              <span class="chip" :style="{ background: p.color }"></span
+              >{{ p.en }}
+            </p>
+            <p class="p-desc">{{ p.desc }}</p>
+            <span class="p-no">{{ p.no }}</span>
+          </div>
         </article>
       </div>
       </div>
@@ -165,7 +168,8 @@ onBeforeUnmount(() => ctx?.revert());
   position: absolute;
   inset: 0;
   transform: perspective(1200px) rotateX(7deg) rotateY(-9deg) rotate(-4deg);
-  transform-style: preserve-3d;
+  /* 不开 preserve-3d:子元素拍平到倾斜平面即可,真 3D 上下文会让
+     Chromium 的 hover 命中检测漂移,卡片 hover 缩放时来回抖 */
 }
 
 /* —— 左侧:相片卡 + 关于我 —— */
@@ -233,20 +237,25 @@ onBeforeUnmount(() => ctx?.revert());
 }
 .p-card {
   position: relative;
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(6px);
+  cursor: pointer;
+}
+.p-card:hover {
+  z-index: 2;
+}
+/* 视觉样式都在内层;backdrop-filter 在 3D 变换里会闪,换成更实的白底 */
+.p-inner {
+  position: relative;
+  background: rgba(255, 255, 255, 0.95);
   border: 1px solid rgba(0, 0, 0, 0.04);
   border-radius: 12px;
   padding: 14px 18px;
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
-  cursor: pointer;
   transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
     box-shadow 0.35s ease;
 }
-.p-card:hover {
+.p-card:hover .p-inner {
   transform: scale(1.05);
   box-shadow: 0 22px 50px rgba(0, 0, 0, 0.14);
-  z-index: 2;
 }
 .p-title {
   font-size: 15px;
