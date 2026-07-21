@@ -2,6 +2,7 @@
 import { onMounted, onBeforeUnmount, ref } from "vue";
 import { gsap } from "gsap";
 import { resume } from "@/data/profile";
+import { brand } from "@/data/site"
 import { useEnter } from "@/composables/useEnter";
 
 const props = defineProps<{ active: boolean }>();
@@ -56,7 +57,7 @@ onBeforeUnmount(() => ctx?.revert());
           <h2 class="title">
             <span v-for="(t, i) in resume.title" :key="i">{{ t }}</span>
             <!-- 手写签名 -->
-            <em class="sign">Zwt</em>
+            <em class="sign">{{brand}}</em>
           </h2>
           <p class="roles">{{ resume.roles }}</p>
           <p class="intro">{{ resume.intro }}</p>
@@ -126,8 +127,7 @@ onBeforeUnmount(() => ctx?.revert());
                 >
                   <span
                     class="skill-ic"
-                    :style="{ background: s.bg, color: s.fg }"
-                    >{{ s.abbr }}</span
+                    ><img :src="s.src" alt=""></span
                   >
                   <span class="skill-name">{{ s.name }}</span>
                 </div>
@@ -135,12 +135,12 @@ onBeforeUnmount(() => ctx?.revert());
             </div>
           </div>
 
-          <div class="edu" data-anim>
+          <!-- <div class="edu" data-anim>
             <p class="block-title"><i class="dot"></i>教育背景</p>
             <p>{{ resume.education.period }}</p>
             <p>{{ resume.education.degree }}</p>
             <p>{{ resume.education.school }}</p>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
@@ -350,7 +350,7 @@ onBeforeUnmount(() => ctx?.revert());
 .bottom {
   grid-area: bottom;
   display: grid;
-  grid-template-columns: 1.05fr 1.6fr 0.95fr;
+  grid-template-columns: 1.1fr 1.4fr;
   gap: 22px;
 }
 .quote,

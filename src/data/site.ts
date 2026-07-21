@@ -1,5 +1,5 @@
 // ⭐ 全站导航 & 品牌 —— 改这里换名字/导航
-export const brand = "ZWT";
+export const brand = "DY";
 
 export const navItems = [
   { id: "hero", label: "简历" },

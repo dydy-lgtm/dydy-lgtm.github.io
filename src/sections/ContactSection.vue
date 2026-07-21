@@ -45,14 +45,14 @@ onBeforeUnmount(() => ctx?.revert());
 <template>
   <section id="contact" ref="root" class="contact">
     <!-- AI 视频背景:画面里已含举着二维码手机的人物 -->
-    <video
+    <img
       class="bg"
       :src="contact.videoSrc"
       autoplay
       muted
       loop
       playsinline
-    ></video>
+    ></img>
     <div class="mask"></div>
 
     <div class="inner container">
@@ -62,7 +62,7 @@ onBeforeUnmount(() => ctx?.revert());
         <h2 class="title">{{ contact.title }}</h2>
         <p class="desc">{{ contact.desc }}</p>
         <div class="socials">
-          <a
+          <!-- <a
             v-for="s in contact.socials"
             :key="s.name"
             :href="s.link"
@@ -79,10 +79,9 @@ onBeforeUnmount(() => ctx?.revert());
                 stroke-linecap="round"
               />
             </svg>
-          </a>
+          </a> -->
         </div>
         <div class="actions">
-          <a class="btn primary" :href="`mailto:${contact.email}`">联系我</a>
           <button class="btn" @click="goToTop">返回顶部</button>
         </div>
       </div>
@@ -122,8 +121,9 @@ onBeforeUnmount(() => ctx?.revert());
 .inner {
   position: relative;
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
   width: 100%;
+  padding-left: 10%;
 }
 .glass {
   width: min(340px, 88vw);

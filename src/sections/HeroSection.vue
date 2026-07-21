@@ -13,7 +13,7 @@ let revealed = false;
 let fallbackTimer: number | undefined;
 
 // 入场视频播完(或兜底超时)后才揭示文字 + 放行导航
-const INTRO_FALLBACK_MS = 6500;
+const INTRO_FALLBACK_MS = 2500;
 
 function revealHero() {
   if (revealed) return;
@@ -37,10 +37,10 @@ onMounted(() => {
     // 背景 Ken Burns:持续缓动循环(不再绑滚动)
     gsap.to(self.selector!(".bg"), {
       scale: 1.12,
-      duration: 14,
+      duration: 1,
       ease: "sine.inOut",
-      repeat: -1,
-      yoyo: true,
+      // repeat: -1,
+      // yoyo: true,
     });
   }, root.value);
 
@@ -50,9 +50,9 @@ onMounted(() => {
     v.addEventListener(
       "ended",
       () => {
-        v.loop = true; // 之后恢复循环做氛围
-        v.play().catch(() => {});
-        revealHero();
+        // v.loop = false; // 之后恢复循环做氛围
+        // v.play().catch(() => {});
+        // revealHero();
       },
       { once: true }
     );

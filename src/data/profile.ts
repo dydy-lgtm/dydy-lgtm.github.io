@@ -6,7 +6,7 @@ export const hero = {
   subtitle: "UI设计 / 交互体验 / 产品设计",
   // 把首屏的多镜头 AI 视频放到 public/ 下,改这里的路径
   videoSrc: "/media/hero.mp4",
-  badge: "AI生成",
+  badge: "",
   ctas: [
     { label: "去看看", to: "featured", primary: true },
     { label: "联系我", to: "contact", primary: false },
@@ -45,11 +45,12 @@ export const resume = {
   ],
   // 专业技能 —— 横向滚动走马灯;abbr 是图标块里的缩写,bg/fg 是图标块配色
   skills: [
-    { abbr: "S", name: "Sketch", fg: "#fff", bg: "#FDB300" },
-    { abbr: "Ps", name: "Photoshop", fg: "#31A8FF", bg: "#001E36" },
-    { abbr: "Ai", name: "Illustrator", fg: "#FF9A00", bg: "#330000" },
-    { abbr: "Ae", name: "After Effects", fg: "#9999FF", bg: "#00005B" },
-    { abbr: "F", name: "Figma", fg: "#fff", bg: "#A259FF" },
+    { abbr: "S", name: "Sketch", fg: "#fff", bg: "#FDB300", src: "/media/skills/sketch.png" },
+    { abbr: "Ps", name: "Photoshop", fg: "#31A8FF", bg: "#001E36", src: "/media/skills/ps.png" },
+    { abbr: "Ai", name: "Ai", fg: "#FF9A00", bg: "#330000", src: "/media/skills/ai.png" },
+    { abbr: "Ae", name: "After Effects", fg: "#9999FF", bg: "#00005B", src: "/media/skills/ae.png" },
+    { abbr: "F", name: "Figma", fg: "#fff", bg: "#A259FF", src: "/media/skills/figma.png" },
+    { abbr: "AG", name: "AIGC", fg: "#fff", bg: "#A259FF", src: "/media/skills/aigc.png" },
   ],
   education: {
     period: "2014 - 2018",
