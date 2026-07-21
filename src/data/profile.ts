@@ -3,7 +3,7 @@
 export const hero = {
   kicker: "PORTFOLIO 2026",
   title: "UI设计作品集",
-  subtitle: "视觉设计 / UI 设计 / 品牌设计",
+  subtitle: "UI设计 / 交互体验 / 产品设计",
   // 把首屏的多镜头 AI 视频放到 public/ 下,改这里的路径
   videoSrc: "/media/hero.mp4",
   badge: "AI生成",
@@ -15,32 +15,32 @@ export const hero = {
 
 export const resume = {
   title: ["设计", "创造价值"],
-  roles: "视觉设计师 / UI 设计师 / 品牌设计师",
-  intro: "专注于品牌视觉、界面体验与页面秩序,让复杂信息更清晰地被看见。",
+  roles: "UI设计师 / UX设计师 / 产品设计师",
+  intro: "专注于页面设计、交互体验与页面秩序,让复杂信息更清晰地被看见。",
   person: {
-    name: "翟雯婷",
+    name: "戴宇",
     tagEn: "Designer",
-    location: "中国 · 杭州",
-    email: "zwt.design@email.com",
-    note: "可自由远程工作",
+    location: "中国 · 深圳",
+    email: "315883782@qq.com",
+    note: "7天内到岗",
   },
   // 翻入简历屏时,数字会从 0 滚动到目标值(count-up)
   stats: [
-    { value: 3, suffix: "年+", label: "UI 设计经验" },
+    { value: 7, suffix: "年+", label: "UI 设计经验" },
     { value: 20, suffix: "+", label: "项目落地参与" },
     { value: 4, suffix: "端", label: "多端界面设计" },
-    { value: 5, suffix: "套+", label: "设计规范沉淀" },
+    { value: 1, suffix: "套", label: "独立设计产品" },
   ],
   timeline: [
     {
-      period: "2022 - 至今",
-      title: "视觉设计师 · 品牌与运营设计方向",
-      desc: "负责品牌视觉系统、活动专题页、运营物料与项目包装设计。参与需求拆解、视觉方向制定和页面落地。",
+      period: "2024.06 - 2026.05",
+      title: "UI/UX设计师 · 产品页面设计方向",
+      desc: "负责政府可视化大屏项目、自研产品迭代优化、运营物料设计。参与需求拆解、视觉方向制定、交互优化、动效制作和页面落地。",
     },
     {
-      period: "2020 - 2022",
-      title: "UI 设计师 · 产品界面设计方向",
-      desc: "负责 Web 页面、移动端界面、后台管理系统与组件规范设计。参与从信息架构、交互流程到高保真视觉的完整设计过程。",
+      period: "2022.07 - 2024.04",
+      title: "UI/UX设计师 · 产品界面设计方向",
+      desc: "负责青葱守护产品的Web 页面、移动端界面、后台管理系统与组件规范设计。参与从信息架构、交互流程到高保真视觉的完整设计过程。",
     },
   ],
   // 专业技能 —— 横向滚动走马灯;abbr 是图标块里的缩写,bg/fg 是图标块配色
