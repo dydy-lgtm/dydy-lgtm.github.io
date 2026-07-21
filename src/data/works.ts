@@ -70,10 +70,10 @@ export const catalogFilters = [
 export const catalog: Work[] = [
   {
     id: "G端",
-    tag: "可视化大屏",
+    tag: "BIG SCREEN",
     title: "现代农业DAP管理平台",
     desc: "可视化大屏、页面设计、动效设计。",
-    category: "G端",
+    category: "可视化大屏",
     cover: "/media/works/site-corp.png",
   },
   {
@@ -85,7 +85,7 @@ export const catalog: Work[] = [
     cover: "/media/works/aisn.png",
   },
   {
-    id: "mini",
+    id: "mini2",
     tag: "MINI PROGRAM",
     title: "星座骰子小程序",
     desc: "需求调研、交互体验、页面设计。",
@@ -93,7 +93,7 @@ export const catalog: Work[] = [
     cover: "/media/works/xzsz.png",
   },
   {
-    id: "APP",
+    id: "APP1",
     tag: "APP",
     title: "青葱守护APP",
     desc: "教育管控、页面优化、交互体验。",
@@ -105,11 +105,11 @@ export const catalog: Work[] = [
     tag: "SAAS",
     title: "青葱守护-校企管理后台",
     desc: "信息架构、筛选效率、视觉规范。",
-    category: "网页",
+    category: "B端后台",
     cover: "/media/works/qcsh_web.png",
   },
   {
-    id: "mini",
+    id: "mini3",
     tag: "MINI PROGRAM",
     title: "青葱守护-校企管理小程序",
     desc: "详情布局、状态反馈、组件规范。",
@@ -121,19 +121,19 @@ export const catalog: Work[] = [
     tag: "WEBSITE",
     title: "青葱守护-平板/pc端",
     desc: "0-1、需求分析、页面设计。",
-    category: "pc端",
+    category: "B端后台",
     cover: "/media/works/qcsh_ipad.png",
   },
   {
-    id: "APP",
+    id: "APP2",
     tag: "APP",
     title: "微喇对讲",
     desc: "页面优化、交互体验、软硬结合。",
-    category: "平面",
+    category: "移动端",
     cover: "/media/works/wldj.png",
   },
   {
-    id: "APP",
+    id: "APP3",
     tag: "APP",
     title: "万安智能-移动端/手表",
     desc: "智能家居、图形表达、表盘设计计。",
