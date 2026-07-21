@@ -6,7 +6,7 @@ export interface Work {
   title: string;
   subtitle?: string;
   desc: string;
-  category: string; // 用于目录页筛选:网页 / 小程序 / app / 运营插画 / 平面
+  category: string; // 用于目录页筛选:可视化大屏 / 小程序 / APP / b端后台
   cover: string; // public/ 下的图片路径
   chips?: string[];
 }
@@ -18,7 +18,7 @@ export const featured: Work[] = [
     tag: "G端",
     title: "现代农业DAP管理平台",
     desc: "三端设计体系构建，从0到1构建县域农业数字底座。",
-    category: "网页",
+    category: "可视化大屏",
     cover: "/media/works/edu.jpg",
   },
   {
@@ -27,7 +27,7 @@ export const featured: Work[] = [
     title: "识农AI小程序",
     subtitle: "AI INTELLIGENT CUSTOMER SERVICE",
     desc: "围绕知识库、会话处理和移动端服务路径,专业农业AI智能助手。",
-    category: "网页",
+    category: "小程序",
     cover: "/media/works/ai-cs.jpg",
     chips: ["需求整理", "移动端体验", "界面设计"],
   },
@@ -37,7 +37,7 @@ export const featured: Work[] = [
     title: "星座骰子",
     subtitle: "TRAVEL EXPERIENCE",
     desc: "融合占星学与AI解读的智能决策应用，通过投掷星座骰子获取命运指引。",
-    category: "AI",
+    category: "小程序",
     cover: "/media/works/travel.jpg",
     chips: ["移动端界面", "用户路径", "视觉系统"],
   },
@@ -46,11 +46,11 @@ export const featured: Work[] = [
     tag: "UX",
     title: "青葱守护APP",
     desc: "视觉重心、检测流程、体验改版。",
-    category: "app",
+    category: "App",
     cover: "/media/works/health.jpg",
   },
   {
-    id: "illus",
+    id: "b端后台",
     tag: "VIS",
     title: "青葱守护校企端",
     desc: "降本增效、图形语言、设计规范。",
@@ -62,9 +62,9 @@ export const featured: Work[] = [
 // 作品目录(筛选网格,可比精选更全)
 export const catalogFilters = [
   "全部",
+  "可视化大屏",
   "移动端",
-  "B端后台"
-  "平面",
+  "B端后台",
 ];
 
 export const catalog: Work[] = [
